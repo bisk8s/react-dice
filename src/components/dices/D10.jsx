@@ -1,9 +1,9 @@
 import React from 'react';
 import * as THREE from 'three';
 import { useConvexPolyhedron } from 'use-cannon';
-import { Polyhedron } from '@react-three/drei'
+import { Polyhedron } from '@react-three/drei';
 
-export default function  D10 (props) {
+export default function D10(props) {
   const sides = 10;
   const radius = 1;
   const vertices = [
@@ -51,8 +51,8 @@ export default function  D10 (props) {
   });
 
   return (
-    <Polyhedron args={args} ref={ref} >
+    <Polyhedron args={args} ref={ref}>
       <meshNormalMaterial attach="material" />
     </Polyhedron>
   );
-};
+}
