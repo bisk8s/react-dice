@@ -3,7 +3,7 @@ import React from 'react';
 import { Canvas } from 'react-three-fiber';
 import { Physics } from 'use-cannon';
 
-import { D4, D6, D8, D10 } from './dices';
+import { D4, D6, D8, D10, D12, D20 } from './dices';
 import Table from './Table';
 
 export default function DiceTable() {
@@ -24,6 +24,8 @@ export default function DiceTable() {
         <D6 position={[0, 10, -2]} />
         <D8 position={[5, 10, -2]} />
         <D10 position={[10, 10, -2]} />
+        <D12 position={[15, 10, -2]} />
+        <D20 position={[-10, 10, -2]} />
       </Physics>
     </Canvas>
   );

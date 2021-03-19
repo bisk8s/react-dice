@@ -8,7 +8,7 @@ export default function D6(props) {
 
   return (
     <Box ref={ref} args={[size, size, size]} castShadow receiveShadow>
-      <meshBasicMaterial attach="material" color="grey" />
+      <meshNormalMaterial attach="material" color="grey" />
     </Box>
   );
 }

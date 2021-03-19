@@ -16,7 +16,7 @@ export default function D4(props) {
 
   return (
     <Tetrahedron ref={ref} args={radius} castShadow receiveShadow>
-      <meshBasicMaterial attach="material" color="grey" />
+      <meshNormalMaterial attach="material" color="grey" />
     </Tetrahedron>
   );
 }
