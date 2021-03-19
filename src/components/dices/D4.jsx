@@ -1,15 +1,12 @@
-import React, { useState } from 'react'
+import React from 'react'
 import * as THREE from 'three'
 import { useConvexPolyhedron } from 'use-cannon'
-
+import { Tetrahedron } from '@react-three/drei'
 
 export default function D4(props) {
-  const [hovered, setHover] = useState(false);
-  
-
-  const radius = 1
+  const radius = 1.5
   const tetrahedronGeometry = new THREE.TetrahedronGeometry(radius)
-  const [ref, api] = useConvexPolyhedron(() => {
+  const [ref] = useConvexPolyhedron(() => {
     return {
       args: tetrahedronGeometry,
       mass: 1,
@@ -17,17 +14,10 @@ export default function D4(props) {
     }
   })
   
-  
   return (
-    <mesh ref={ref}
-      receiveShadow  
-      castShadow 
-      onPointerOver={() => setHover(true)}
-      onPointerOut={() => setHover(false)}
-      >
-      <tetrahedronGeometry attach="geometry" />
-      <meshLambertMaterial attach="material" color={hovered ? '#D00' : '#EEE'} />
-    </mesh>
+    <Tetrahedron ref={ref} args={radius}>
+      <meshNormalMaterial attach="material"  />
+    </Tetrahedron>
   )
 }
 
