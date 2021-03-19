@@ -51,7 +51,7 @@ export default function  D10 (props) {
   });
 
   return (
-    <Polyhedron      args={args}       ref={ref}    >
+    <Polyhedron args={args} ref={ref} >
       <meshNormalMaterial attach="material" />
     </Polyhedron>
   );

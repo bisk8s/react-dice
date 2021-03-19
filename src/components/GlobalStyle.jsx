@@ -12,7 +12,7 @@ body,
   height: 100%;
   margin: 0;
   padding: 0;
-  background-color: lightblue;
+  background-color: transparent;
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   -khtml-user-select: none;
@@ -27,7 +27,7 @@ body {
   overflow: hidden;
   overscroll-behavior-y: none;
   font-family: -apple-system, BlinkMacSystemFont, avenir next, avenir, helvetica neue, helvetica, ubuntu, roboto, noto, segoe ui, arial, sans-serif;
-  color: #0F0;
+  background-color: transparent;
 }
 `;
 
