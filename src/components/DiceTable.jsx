@@ -9,7 +9,6 @@ import Table from './Table';
 export default function DiceTable() {
   return (
     <Canvas>
-      {/* <color attach="background" args={['#0f0']} /> */}
       <PerspectiveCamera makeDefault position={[0, 0, 20]} />
       <hemisphereLight intensity={0.35} />
       <spotLight
