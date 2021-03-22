@@ -1,6 +1,6 @@
 import React from 'react';
-import DiceTable from './components/DiceTable';
+import DiceBox from './components/DiceBox';
 
 export default function App() {
-  return <DiceTable />;
+  return <DiceBox />;
 }
