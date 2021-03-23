@@ -1,5 +1,4 @@
 import * as THREE from 'three';
-// import * as CANNON from 'cannon';
 
 export function geometryD4(radius) {
   let vertices = [

@@ -4,7 +4,8 @@ import { Polyhedron } from '@react-three/drei';
 
 import { D20Materials } from '../../utils/Material';
 import { geometryD10 } from '../../utils/Geometry';
-// import { randomRotation } from '../../utils/RandomRotation';
+import { randomRotation } from '../../utils/RandomRotation';
+import geDiceValue from '../../utils/DiceValue';
 
 export default function D10(props) {
   const radius = 1.5;
@@ -14,7 +15,8 @@ export default function D10(props) {
     return {
       args: geometry,
       mass: 1,
-      // rotation: randomRotation(),
+      rotation: randomRotation(),
+      allowSleep: true,
       ...props,
     };
   });
@@ -26,7 +28,11 @@ export default function D10(props) {
       ref={ref}
       castShadow
       receiveShadow
-      material={D20Materials.slice(1)}
+      material={D20Materials}
+      onClick={() => {
+        const value = geDiceValue('D10', geometry, ref.current);
+        console.log(value);
+      }}
     />
   );
 }
