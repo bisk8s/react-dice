@@ -59,7 +59,6 @@ export function createDiceMaterials(faceLabels, fontSize, margin) {
 }
 
 export const standartD20Labels = [
-  ' ',
   '0',
   '1',
   '2',
@@ -84,7 +83,6 @@ export const standartD20Labels = [
 ];
 
 export const standartD100Labels = [
-  ' ',
   '00',
   '10',
   '20',
