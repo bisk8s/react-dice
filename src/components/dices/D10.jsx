@@ -26,7 +26,7 @@ export default function D10(props) {
       ref={ref}
       castShadow
       receiveShadow
-      material={D20Materials}
+      material={D20Materials.slice(1)}
     />
   );
 }

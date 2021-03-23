@@ -51,6 +51,7 @@ export function createDiceMaterials(faceLabels, fontSize, margin) {
     const material = new THREE.MeshPhongMaterial({
       ...materialOptions,
       map: texture,
+      side: THREE.DoubleSide,
     });
 
     return material;

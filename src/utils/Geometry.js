@@ -64,39 +64,58 @@ export function geometryD8(radius) {
 }
 
 export function geometryD10(radius) {
-  // total sides
-  const totalSides = 10;
-  const sides = [...new Array(totalSides)];
+  // total waves
+  const totalWaves = 10;
+  const waves = [...new Array(totalWaves)];
 
   // top and bottom vertices
-  const vertices = [
+  let vertices = [
     [0, 0, 1],
     [0, 0, -1],
   ];
 
   // middle vertices
-  sides.forEach((_, sideIndex) => {
-    const wave = (sideIndex * Math.PI * 2) / totalSides;
+  waves.forEach((_, sideIndex) => {
+    const wave = (sideIndex * Math.PI * 2) / totalWaves;
     vertices.push([
       -Math.cos(wave),
       -Math.sin(wave),
-      0.105 * (sideIndex % 2 ? 1 : -1),
+      0.105 * (sideIndex % 2 ? -1 : 1),
     ]);
   });
 
-  const sideD10 = (pivot, sideIndex) => {
-    const a = sideIndex + 2;
-    const b = sideIndex + 3;
-    return [pivot, a, b <= totalSides + 1 ? b : 2];
-  };
-
-  // faces
   const faces = [
-    ...sides.map((_, sideIndex) => sideD10(0, sideIndex)),
-    ...sides.map((_, sideIndex) => sideD10(1, sideIndex).reverse()),
+    [0, 2, 3],
+    [0, 3, 4],
+    [0, 4, 5],
+    [0, 5, 6],
+    [0, 6, 7],
+    [0, 7, 8],
+    [0, 8, 9],
+    [0, 9, 10],
+    [0, 10, 11],
+    [0, 11, 2],
+
+    [1, 3, 4],
+    [1, 4, 5],
+    [1, 5, 6],
+    [1, 6, 7],
+    [1, 7, 8],
+    [1, 8, 9],
+    [1, 9, 10],
+    [1, 10, 11],
+    [1, 11, 2],
+    [1, 2, 3],
   ];
 
-  return createGeometry(vertices, faces, radius, 0);
+  const uvMapping = (uv, i) => {
+    const isEven = i % 2 === 0;
+    uv[0].set(...(isEven ? [0.5, 1] : [0.5, 1]));
+    uv[1].set(...(isEven ? [0, 0.15] : [0.5, 0]));
+    uv[2].set(...(isEven ? [0.5, 0] : [1, 0.15]));
+  };
+
+  return createGeometry(vertices, faces, radius, uvMapping);
 }
 
 export function geometryD12(radius) {
@@ -182,37 +201,30 @@ export function geometryD20(radius) {
   return createGeometry(vertices, faces, radius, -0.2, -Math.PI / 4 / 2, 0.955);
 }
 
-export function createGeometry(vertices, faces, radius) {
+export function createGeometry(vertices, faces, radius, uvMapping) {
   const args = [vertices.flat(), faces.flat(), radius, 0];
   let geometry = new THREE.PolyhedronGeometry(...args);
 
-  const af = (Math.PI * 6) / 5;
-  const tab = 0;
-  const fs = 2; // face sides
+  // we must to guarantee our coordinates on vertices
+  geometry.vertices.forEach((vertice, i) => {
+    vertice.set(...vertices[i]);
+  });
 
-  // set each face a material
+  // we must to guarantee our coordinates on faces
+  // and set each face a material
   geometry.faces.forEach((face, i, arr) => {
-    const index = Math.ceil(10 * ((i + 1) / arr.length));
-    face.materialIndex = index;
+    // every 2 triangles must have the same material
+    const materialIndex = Math.ceil(10 * ((i + 1) / arr.length)) - 1;
+    face.a = faces[i][0];
+    face.b = faces[i][1];
+    face.c = faces[i][2];
+    face.materialIndex = materialIndex;
   });
 
   // uv mapping
-  geometry.faceVertexUvs[0].forEach((uv, i) => {
-    uv[0].set(
-      (Math.cos(af) + 1 + tab) / 2 / (1 + tab),
-      (Math.sin(af) + 1 + tab) / 2 / (1 + tab)
-    );
-    uv[1].set(
-      (Math.cos(fs * (i + 1) + af) + 1 + tab) / 2 / (1 + tab),
-      (Math.sin(fs * (i + 1) + af) + 1 + tab) / 2 / (1 + tab)
-    );
-    uv[2].set(
-      (Math.cos(fs * (i + 2) + af) + 1 + tab) / 2 / (1 + tab),
-      (Math.sin(fs * (i + 2) + af) + 1 + tab) / 2 / (1 + tab)
-    );
-  });
-  geometry.uvsNeedUpdate = true;
+  geometry.faceVertexUvs[0].forEach(uvMapping);
 
+  geometry.uvsNeedUpdate = true;
   geometry.boundingSphere = new THREE.Sphere(new THREE.Vector3(), radius);
 
   return [geometry, args];
