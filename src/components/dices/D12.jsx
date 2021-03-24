@@ -5,7 +5,7 @@ import { D20Materials } from '../../utils/Material';
 import { randomRotation } from '../../utils/RandomRotation';
 // import getDiceValue from '../../utils/DiceValue';
 
-export default function D12() {
+export default function D12({ position }) {
   const radius = 1.5;
   const geometry = new THREE.DodecahedronGeometry(radius);
   const [ref] = useConvexPolyhedron(() => {
@@ -17,6 +17,7 @@ export default function D12() {
         // const diceValue = getDiceValue('D12', geometry, ref.current, 1);
         // console.log(diceValue);
       },
+      position,
     };
   });
 

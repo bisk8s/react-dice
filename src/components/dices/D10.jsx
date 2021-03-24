@@ -5,7 +5,7 @@ import { D20Materials } from '../../utils/Material';
 import { randomRotation } from '../../utils/RandomRotation';
 // import getDiceValue from '../../utils/DiceValue';
 
-export default function D10() {
+export default function D10({ position }) {
   const sides = 10;
   const radius = 1.5;
   const vertices = [
@@ -53,6 +53,7 @@ export default function D10() {
         // const diceValue = getDiceValue('D10', geometry, ref.current);
         // console.log(diceValue);
       },
+      position,
     };
   });
 

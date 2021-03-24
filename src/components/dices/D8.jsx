@@ -5,7 +5,7 @@ import { randomRotation } from '../../utils/RandomRotation';
 import { D20Materials } from '../../utils/Material';
 // import getDiceValue from '../../utils/DiceValue';
 
-export default function D8() {
+export default function D8({ position }) {
   const radius = 1.5;
   const geometry = new THREE.OctahedronGeometry(radius);
   const [ref] = useConvexPolyhedron(() => {
@@ -17,6 +17,7 @@ export default function D8() {
         // const diceValue = getDiceValue('D8', geometry, ref.current, 1);
         // console.log(diceValue);
       },
+      position,
     };
   });
 

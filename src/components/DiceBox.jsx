@@ -62,19 +62,20 @@ export default function DiceBox() {
 
           {dices.map((type, key) => {
             const _key = type + key + Date.now();
+            const position = [0, 40, 0];
             switch (type) {
               case 'D4':
-                return <D4 key={_key} position={[0, 10, 0]} />;
+                return <D4 key={_key} position={position} />;
               case 'D6':
-                return <D6 key={_key} position={[0, 10, 0]} />;
+                return <D6 key={_key} position={position} />;
               case 'D8':
-                return <D8 key={_key} position={[0, 10, 0]} />;
+                return <D8 key={_key} position={position} />;
               case 'D10':
-                return <D10 key={_key} position={[0, 10, 0]} />;
+                return <D10 key={_key} position={position} />;
               case 'D12':
-                return <D12 key={_key} position={[0, 10, 0]} />;
+                return <D12 key={_key} position={position} />;
               case 'D20':
-                return <D20 key={_key} position={[0, 10, 0]} />;
+                return <D20 key={_key} position={position} />;
               default:
                 return null;
             }

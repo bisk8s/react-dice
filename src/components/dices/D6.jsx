@@ -5,7 +5,7 @@ import { D20Materials } from '../../utils/Material';
 import { randomRotation } from '../../utils/RandomRotation';
 // import getDiceValue from '../../utils/DiceValue';
 
-export default function D6() {
+export default function D6({ position }) {
   const size = 2;
   const geometry = new THREE.BoxGeometry(size, size, size);
 
@@ -17,6 +17,7 @@ export default function D6() {
       // const diceValue = getDiceValue('D6', geometry, ref.current, 1);
       // console.log(diceValue);
     },
+    position,
   }));
 
   return (
