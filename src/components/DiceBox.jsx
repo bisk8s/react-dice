@@ -1,42 +1,83 @@
-import { OrbitControls, PerspectiveCamera } from '@react-three/drei';
-import React from 'react';
+import React, { useState } from 'react';
 import { Canvas, useResource } from 'react-three-fiber';
 import { Physics } from 'use-cannon';
 
-// import { D4, D6, D8, D10, D12, D20 } from './dices';
-import { D10 } from './dices';
+import { MapControls, PerspectiveCamera } from '@react-three/drei';
+
+import { D4, D6, D8, D10, D12, D20 } from './dices';
+
 import Box from './Box';
+import parseNotation from '../utils/DiceNotation';
 
 export default function DiceBox() {
   const sceneCamera = useResource();
 
-  return (
-    <Canvas>
-      <PerspectiveCamera
-        ref={sceneCamera}
-        makeDefault
-        position={[0, 10, 25]}
-        rotation={[-0.3, 0, 0]}
-      />
-      <OrbitControls camera={sceneCamera.current} />
-      <hemisphereLight intensity={0.35} castShadow />
-      <spotLight
-        position={[0, 100, 10]}
-        angle={0.3}
-        penumbra={1}
-        intensity={1}
-        castShadow
-      />
-      <Physics>
-        <Box position={[0, 0, 0]} />
+  const [notation, setNotation] = useState('5d10');
+  const [dices, setDices] = useState([]);
 
-        {/* <D4 position={[-15, 10, 0]} /> */}
-        {/* <D6 position={[-10, 10, 0]} /> */}
-        {/* <D8 position={[-5, 10, 0]} /> */}
-        <D10 position={[0, 10, 0]} />
-        {/* <D12 position={[10, 10, 0]} /> */}
-        {/* <D20 position={[15, 10, 0]} /> */}
-      </Physics>
-    </Canvas>
+  const roll = () => {
+    let notationObj = parseNotation(notation);
+    setDices(notationObj.set);
+  };
+
+  return (
+    <>
+      <div>
+        <input
+          type={'text'}
+          defaultValue={notation}
+          onChange={({ target: { value } }) => {
+            const matches =
+              value.toUpperCase().match(/([0-9]+[D][0-9]+)/gi) || [];
+            const notation = matches.join('+');
+            setNotation(notation);
+          }}
+          onKeyDown={(e) => {
+            if (e.code === 'Enter') {
+              roll();
+            }
+          }}
+        />
+        <button onClick={roll}>Roll!</button>
+      </div>
+      <Canvas>
+        <PerspectiveCamera
+          ref={sceneCamera}
+          makeDefault
+          position={[0, 40, 0]}
+          rotation={[-Math.PI / 2, 0, 0]}
+        />
+        <MapControls camera={sceneCamera.current} />
+        <hemisphereLight intensity={0.35} />
+        <spotLight
+          position={[0, 100, 10]}
+          rotation={[-Math.PI / 2, 0, 0]}
+          penumbra={1}
+          intensity={1}
+        />
+        <Physics>
+          <Box position={[0, 0, 0]} />
+          {dices.map((type, key) => {
+            const _key = type + key;
+            switch (type) {
+              case 'D4':
+                return <D4 key={_key} position={[0, 10, 0]} />;
+              case 'D6':
+                return <D6 key={_key} position={[0, 10, 0]} />;
+              case 'D8':
+                return <D8 key={_key} position={[0, 10, 0]} />;
+              case 'D10':
+                return <D10 key={_key} position={[0, 10, 0]} />;
+              case 'D12':
+                return <D12 key={_key} position={[0, 10, 0]} />;
+              case 'D20':
+                return <D20 key={_key} position={[0, 10, 0]} />;
+              default:
+                return null;
+            }
+          })}
+        </Physics>
+      </Canvas>
+    </>
   );
 }

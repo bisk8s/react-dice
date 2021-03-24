@@ -6,38 +6,22 @@ export function geometryD4(radius) {
     [-1, -1, 1],
     [-1, 1, -1],
     [1, -1, -1],
-  ].flat();
+  ];
 
   let faces = [
-    [1, 0, 2, 1],
-    [0, 1, 3, 2],
-    [0, 3, 2, 3],
-    [1, 2, 3, 4],
-  ].flat();
-
-  return createGeometry(vertices, faces, radius, -0.1, (Math.PI * 7) / 6, 0.96);
-}
-
-export function geometryD6(radius) {
-  let vertices = [
-    [-1, -1, -1],
-    [1, -1, -1],
-    [1, 1, -1],
-    [-1, 1, -1],
-    [-1, -1, 1],
-    [1, -1, 1],
-    [1, 1, 1],
-    [-1, 1, 1],
+    [0, 2, 1],
+    [0, 3, 2],
+    [0, 1, 3],
+    [1, 2, 3],
   ];
-  let faces = [
-    [0, 3, 2, 1, 1],
-    [1, 2, 6, 5, 2],
-    [0, 1, 5, 4, 3],
-    [3, 7, 6, 2, 4],
-    [0, 4, 7, 3, 5],
-    [4, 5, 6, 7, 6],
-  ];
-  return createGeometry(vertices, faces, radius, 0.1, Math.PI / 4, 0.96);
+
+  const uvMapping = (uv) => {
+    uv[0].set(0.5, 1);
+    uv[1].set(0, 0);
+    uv[2].set(1, 0);
+  };
+
+  return createGeometry(vertices, faces, radius, uvMapping);
 }
 
 export function geometryD8(radius) {
@@ -49,17 +33,26 @@ export function geometryD8(radius) {
     [0, 0, 1],
     [0, 0, -1],
   ];
+
   let faces = [
-    [0, 2, 4, 1],
-    [0, 4, 3, 2],
-    [0, 3, 5, 3],
-    [0, 5, 2, 4],
-    [1, 3, 4, 5],
-    [1, 4, 2, 6],
-    [1, 2, 5, 7],
-    [1, 5, 3, 8],
+    [0, 3, 2],
+    [0, 4, 3],
+    [0, 5, 4],
+    [0, 6, 5],
+
+    [1, 2, 3],
+    [1, 3, 4],
+    [1, 4, 5],
+    [1, 5, 6],
   ];
-  return createGeometry(vertices, faces, radius, 0, -Math.PI / 4 / 2, 0.965);
+
+  const uvMapping = (uv) => {
+    uv[0].set(0.5, 1);
+    uv[1].set(0, 0);
+    uv[2].set(1, 0);
+  };
+
+  return createGeometry(vertices, faces, radius, uvMapping);
 }
 
 export function geometryD10(radius) {
@@ -95,23 +88,23 @@ export function geometryD10(radius) {
     [0, 10, 11],
     [0, 11, 2],
 
-    [1, 3, 4],
-    [1, 4, 5],
-    [1, 5, 6],
-    [1, 6, 7],
-    [1, 7, 8],
-    [1, 8, 9],
-    [1, 9, 10],
-    [1, 10, 11],
-    [1, 11, 2],
-    [1, 2, 3],
+    [1, 3, 2],
+    [1, 2, 11],
+    [1, 11, 10],
+    [1, 10, 9],
+    [1, 9, 8],
+    [1, 8, 7],
+    [1, 7, 6],
+    [1, 6, 5],
+    [1, 5, 4],
+    [1, 4, 3],
   ];
 
   const uvMapping = (uv, i) => {
     const isEven = i % 2 === 0;
-    uv[0].set(...(isEven ? [0.5, 1] : [0.5, 1]));
-    uv[1].set(...(isEven ? [0, 0.15] : [0.5, 0]));
-    uv[2].set(...(isEven ? [0.5, 0] : [1, 0.15]));
+    uv[0].set(...(isEven ? [0.5, 1.1] : [0.5, 1.1]));
+    uv[1].set(...(isEven ? [0, 0.3] : [0.5, 0.15]));
+    uv[2].set(...(isEven ? [0.5, 0.15] : [1, 0.3]));
   };
 
   return createGeometry(vertices, faces, radius, uvMapping);
@@ -204,16 +197,20 @@ export function createGeometry(vertices, faces, radius, uvMapping) {
   const args = [vertices.flat(), faces.flat(), radius, 0];
   let geometry = new THREE.PolyhedronGeometry(...args);
 
-  // we must to guarantee our coordinates on vertices
+  // we must guarantee our coordinates on vertices
   geometry.vertices.forEach((vertice, i) => {
-    vertice.set(...vertices[i]);
+    console.log({ i, vertice, v: vertices[i] });
+    vertice.set(...vertices[i].map((v) => v * radius));
   });
 
   // we must to guarantee our coordinates on faces
   // and set each face a material
   geometry.faces.forEach((face, i, arr) => {
     // every 2 triangles must have the same material
-    const materialIndex = Math.ceil(10 * ((i + 1) / arr.length)) - 1;
+    let materialIndex = i;
+    if (arr.length > 4) {
+      materialIndex = Math.ceil(10 * ((i + 1) / arr.length)) - 1;
+    }
     face.a = faces[i][0];
     face.b = faces[i][1];
     face.c = faces[i][2];
@@ -222,8 +219,8 @@ export function createGeometry(vertices, faces, radius, uvMapping) {
 
   // uv mapping
   geometry.faceVertexUvs[0].forEach(uvMapping);
-
   geometry.uvsNeedUpdate = true;
+
   geometry.boundingSphere = new THREE.Sphere(new THREE.Vector3(), radius);
 
   return [geometry, args];

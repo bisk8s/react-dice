@@ -1,11 +1,9 @@
 import * as THREE from 'three';
 
-const labelColor = '#aaaaaa';
-const diceColor = '#202020';
 const materialOptions = {
   specular: 0x172022,
   color: 0xf0f0f0,
-  shininess: 40,
+  shininess: 0,
 };
 
 function calcTextureSize(approx) {
@@ -17,17 +15,25 @@ function createTextTexture(text, color, backColor, fontSize, margin) {
   let canvas = document.createElement('canvas');
   let context = canvas.getContext('2d');
   let ts = calcTextureSize(fontSize + fontSize * 2 * margin) * 2;
+
   canvas.width = canvas.height = ts;
   context.font = ts / (1 + 2 * margin) + 'pt Roboto';
   context.fillStyle = backColor;
   context.fillRect(0, 0, canvas.width, canvas.height);
+
   context.textAlign = 'center';
   context.textBaseline = 'middle';
-  context.fillStyle = color;
-  context.fillText(text, canvas.width / 2, canvas.height / 2);
-  if (text === '6' || text === '9') {
-    context.fillText('  .', canvas.width / 2, canvas.height / 2);
-  }
+
+  ['#000000AA', color, '#FFFFFF33'].forEach((c, i) => {
+    const x = canvas.width / 2 + i * 2;
+    const y = canvas.height / 2 + i * 2;
+    context.fillStyle = c;
+    context.fillText(text, x, y);
+    if (text === '6' || text === '9') {
+      context.fillText('  .', x, y);
+    }
+  });
+
   const texture = new THREE.CanvasTexture(
     canvas,
     THREE.UVMapping,
@@ -38,7 +44,13 @@ function createTextTexture(text, color, backColor, fontSize, margin) {
   return texture;
 }
 
-export function createDiceMaterials(faceLabels, fontSize, margin) {
+export function createDiceMaterials(
+  faceLabels,
+  labelColor,
+  diceColor,
+  fontSize,
+  margin
+) {
   return faceLabels.map((faceLabel) => {
     const texture = createTextTexture(
       faceLabel,
@@ -51,7 +63,6 @@ export function createDiceMaterials(faceLabels, fontSize, margin) {
     const material = new THREE.MeshPhongMaterial({
       ...materialOptions,
       map: texture,
-      side: THREE.DoubleSide,
     });
 
     return material;
@@ -95,4 +106,26 @@ export const standartD100Labels = [
   '90',
 ];
 
-export const D20Materials = createDiceMaterials(standartD20Labels, 50, 1.2);
+export const D20Materials = createDiceMaterials(
+  standartD20Labels,
+  '#aaaaaa',
+  '#002000',
+  50,
+  1.2
+);
+
+export const OnixMaterials = createDiceMaterials(
+  standartD20Labels,
+  '#aaaaaa',
+  '#202020',
+  50,
+  1.2
+);
+
+export const HungerMaterials = createDiceMaterials(
+  standartD20Labels,
+  '#aaaaaa',
+  '#aa0000',
+  50,
+  1.2
+);
