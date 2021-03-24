@@ -22,7 +22,6 @@ export default function D12() {
 
   geometry.faces.forEach((face, i, arr) => {
     let materialIndex = Math.ceil(12 * ((i + 1) / arr.length)) - 1;
-    console.log({ i, materialIndex });
     face.materialIndex = materialIndex;
   });
 

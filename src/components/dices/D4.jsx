@@ -22,8 +22,6 @@ export default function D4() {
 
   geometry.faces.forEach((face, i) => {
     let materialIndex = i;
-
-    console.log({ i, materialIndex });
     face.materialIndex = materialIndex;
   });
 
