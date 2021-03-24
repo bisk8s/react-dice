@@ -1,25 +1,25 @@
 import React from 'react';
+import * as THREE from 'three';
 import { useBox } from 'use-cannon';
-import { Box } from '@react-three/drei';
+import getDiceValue from '../../utils/DiceValue';
 import { D20Materials } from '../../utils/Material';
 import { randomRotation } from '../../utils/RandomRotation';
 
-export default function D6(props) {
+export default function D6() {
   const size = 2;
+  const geometry = new THREE.BoxGeometry(size, size, size);
+
   const [ref] = useBox(() => ({
-    mass: 1,
+    mass: size,
     args: [size, size, size],
     rotation: randomRotation(),
-    ...props,
+    onCollide: () => {
+      const diceValue = getDiceValue('D6', geometry, ref.current, 1);
+      console.log(diceValue);
+    },
   }));
 
   return (
-    <Box
-      ref={ref}
-      args={[size, size, size]}
-      castShadow
-      receiveShadow
-      material={D20Materials.slice(2, 8)}
-    />
+    <mesh ref={ref} geometry={geometry} material={D20Materials.slice(1)} />
   );
 }

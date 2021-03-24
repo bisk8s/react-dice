@@ -12,7 +12,7 @@ import parseNotation from '../utils/DiceNotation';
 export default function DiceBox() {
   const sceneCamera = useResource();
 
-  const [notation, setNotation] = useState('5d10');
+  const [notation, setNotation] = useState('1d10');
   const [dices, setDices] = useState([]);
 
   const roll = () => {
@@ -20,23 +20,23 @@ export default function DiceBox() {
     setDices(notationObj.set);
   };
 
+  const onTextChange = ({ target: { value } }) => {
+    const upper = value.toUpperCase();
+    const matches = upper.match(/([0-9]+[D][0-9]+)/gi) || [];
+    const notation = matches.join(' + ');
+    setNotation(notation);
+  };
+
+  const onEnterPress = (e) => e.code === 'Enter' && roll();
+
   return (
     <>
       <div>
         <input
           type={'text'}
           defaultValue={notation}
-          onChange={({ target: { value } }) => {
-            const matches =
-              value.toUpperCase().match(/([0-9]+[D][0-9]+)/gi) || [];
-            const notation = matches.join('+');
-            setNotation(notation);
-          }}
-          onKeyDown={(e) => {
-            if (e.code === 'Enter') {
-              roll();
-            }
-          }}
+          onChange={onTextChange}
+          onKeyDown={onEnterPress}
         />
         <button onClick={roll}>Roll!</button>
       </div>
@@ -57,8 +57,9 @@ export default function DiceBox() {
         />
         <Physics>
           <Box position={[0, 0, 0]} />
+
           {dices.map((type, key) => {
-            const _key = type + key;
+            const _key = type + key + Date.now();
             switch (type) {
               case 'D4':
                 return <D4 key={_key} position={[0, 10, 0]} />;

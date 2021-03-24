@@ -1,25 +1,26 @@
 import React from 'react';
 import * as THREE from 'three';
 import { useConvexPolyhedron } from 'use-cannon';
-import { Tetrahedron } from '@react-three/drei';
-import { createDiceMaterials, standartD20Labels } from '../../utils/Material';
+import { D20Materials } from '../../utils/Material';
+import { randomRotation } from '../../utils/RandomRotation';
+import getDiceValue from '../../utils/DiceValue';
 
-export default function D4(props) {
+export default function D4() {
   const radius = 1.5;
-  const tetrahedronGeometry = new THREE.TetrahedronGeometry(radius);
+  const geometry = new THREE.TetrahedronGeometry(radius);
   const [ref] = useConvexPolyhedron(() => {
     return {
-      args: tetrahedronGeometry,
-      mass: 1,
-      ...props,
+      mass: radius,
+      args: geometry,
+      mrotation: randomRotation(),
+      onCollide: () => {
+        const diceValue = getDiceValue('D4', geometry, ref.current, 1);
+        console.log(diceValue);
+      },
     };
   });
 
-  const material = createDiceMaterials(standartD20Labels, 50, 1);
-
   return (
-    <Tetrahedron ref={ref} args={radius} castShadow receiveShadow>
-      <meshPhongMaterial attach="material" args={material} />
-    </Tetrahedron>
+    <mesh ref={ref} geometry={geometry} material={D20Materials.slice(1)} />
   );
 }

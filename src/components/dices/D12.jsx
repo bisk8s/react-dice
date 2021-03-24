@@ -1,27 +1,26 @@
 import React from 'react';
 import * as THREE from 'three';
 import { useConvexPolyhedron } from 'use-cannon';
-import { Dodecahedron } from '@react-three/drei';
 import { D20Materials } from '../../utils/Material';
+import { randomRotation } from '../../utils/RandomRotation';
+import getDiceValue from '../../utils/DiceValue';
 
-export default function D12(props) {
-  const radius = 1;
-  const dodecahedronGeometry = new THREE.DodecahedronGeometry(radius);
+export default function D12() {
+  const radius = 1.5;
+  const geometry = new THREE.DodecahedronGeometry(radius);
   const [ref] = useConvexPolyhedron(() => {
     return {
-      args: dodecahedronGeometry,
-      mass: 1,
-      ...props,
+      mass: radius,
+      args: geometry,
+      rotation: randomRotation(),
+      onCollide: () => {
+        const diceValue = getDiceValue('D6', geometry, ref.current, 1);
+        console.log(diceValue);
+      },
     };
   });
 
   return (
-    <Dodecahedron
-      args={radius}
-      ref={ref}
-      castShadow
-      receiveShadow
-      material={D20Materials[0]}
-    />
+    <mesh ref={ref} geometry={geometry} material={D20Materials.slice(1)} />
   );
 }

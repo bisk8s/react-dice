@@ -1,26 +1,26 @@
 import React from 'react';
 import * as THREE from 'three';
 import { useConvexPolyhedron } from 'use-cannon';
-import { Icosahedron } from '@react-three/drei';
 import { D20Materials } from '../../utils/Material';
+import { randomRotation } from '../../utils/RandomRotation';
+import getDiceValue from '../../utils/DiceValue';
 
-export default function D12(props) {
+export default function D12() {
   const radius = 1;
-  const icosahedronGeometry = new THREE.IcosahedronGeometry(radius);
+  const geometry = new THREE.IcosahedronGeometry(radius);
   const [ref] = useConvexPolyhedron(() => {
     return {
-      args: icosahedronGeometry,
-      mass: 1,
-      ...props,
+      mass: radius,
+      args: geometry,
+      rotation: randomRotation(),
+      onCollide: () => {
+        const diceValue = getDiceValue('D6', geometry, ref.current, 1);
+        console.log(diceValue);
+      },
     };
   });
 
   return (
-    <Icosahedron
-      args={radius}
-      ref={ref}
-      castShadow
-      receiveShadowmaterial={D20Materials[0]}
-    />
+    <mesh ref={ref} geometry={geometry} material={D20Materials.slice(1)} />
   );
 }

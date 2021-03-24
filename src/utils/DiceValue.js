@@ -3,7 +3,7 @@ import * as THREE from 'three';
 // Must be a better way...
 /*
  * - maybe a raycast?
- * -what about the materialIndex?
+ * - what about the materialIndex?
  */
 export default function getDiceValue(
   diceType,
