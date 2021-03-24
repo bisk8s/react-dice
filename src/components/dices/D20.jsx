@@ -6,7 +6,7 @@ import { randomRotation } from '../../utils/RandomRotation';
 // import getDiceValue from '../../utils/DiceValue';
 
 export default function D12() {
-  const radius = 1;
+  const radius = 1.6;
   const geometry = new THREE.IcosahedronGeometry(radius);
   const [ref] = useConvexPolyhedron(() => {
     return {

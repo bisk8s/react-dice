@@ -6,7 +6,7 @@ import { D20Materials } from '../../utils/Material';
 // import getDiceValue from '../../utils/DiceValue';
 
 export default function D8() {
-  const radius = 1;
+  const radius = 1.5;
   const geometry = new THREE.OctahedronGeometry(radius);
   const [ref] = useConvexPolyhedron(() => {
     return {
