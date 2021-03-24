@@ -1,9 +1,9 @@
 import React from 'react';
 import * as THREE from 'three';
 import { useConvexPolyhedron } from 'use-cannon';
-import getDiceValue from '../../utils/DiceValue';
 import { randomRotation } from '../../utils/RandomRotation';
 import { D20Materials } from '../../utils/Material';
+// import getDiceValue from '../../utils/DiceValue';
 
 export default function D8() {
   const radius = 1;
@@ -14,13 +14,13 @@ export default function D8() {
       args: geometry,
       rotation: randomRotation(),
       onCollide: () => {
-        const diceValue = getDiceValue('D6', geometry, ref.current, 1);
-        console.log(diceValue);
+        // const diceValue = getDiceValue('D8', geometry, ref.current, 1);
+        // console.log(diceValue);
       },
     };
   });
 
-  geometry.faces.forEach((face, i, arr) => {
+  geometry.faces.forEach((face, i) => {
     let materialIndex = i;
 
     console.log({ i, materialIndex });

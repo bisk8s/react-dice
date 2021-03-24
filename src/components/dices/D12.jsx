@@ -3,7 +3,7 @@ import * as THREE from 'three';
 import { useConvexPolyhedron } from 'use-cannon';
 import { D20Materials } from '../../utils/Material';
 import { randomRotation } from '../../utils/RandomRotation';
-import getDiceValue from '../../utils/DiceValue';
+// import getDiceValue from '../../utils/DiceValue';
 
 export default function D12() {
   const radius = 1.5;
@@ -14,11 +14,45 @@ export default function D12() {
       args: geometry,
       rotation: randomRotation(),
       onCollide: () => {
-        const diceValue = getDiceValue('D6', geometry, ref.current, 1);
-        console.log(diceValue);
+        // const diceValue = getDiceValue('D12', geometry, ref.current, 1);
+        // console.log(diceValue);
       },
     };
   });
+
+  geometry.faces.forEach((face, i, arr) => {
+    let materialIndex = Math.ceil(12 * ((i + 1) / arr.length)) - 1;
+    console.log({ i, materialIndex });
+    face.materialIndex = materialIndex;
+  });
+
+  const uvMapping = (uv, i) => {
+    const type = i % 3;
+    // point map
+    const a = [0.5, 0.95];
+    const b = [0.05, 0.66];
+    const c = [0.95, 0.66];
+    const d = [0.2, 0.09];
+    const e = [0.8, 0.09];
+    /*
+      Image explanation
+           A
+          ,'.
+      B ,'   `. C
+        \     /
+         \___/
+         D   E
+      
+      reference: https://threejs.org/docs/#api/en/geometries/DodecahedronGeometry
+    */
+    uv[0].set(...[a, b, d][type]);
+    uv[1].set(...[b, d, e][type]);
+    uv[2].set(...c);
+  };
+
+  // uv mapping
+  geometry.faceVertexUvs[0].forEach(uvMapping);
+  geometry.uvsNeedUpdate = true;
 
   return (
     <mesh ref={ref} geometry={geometry} material={D20Materials.slice(1)} />

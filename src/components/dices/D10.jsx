@@ -3,7 +3,7 @@ import * as THREE from 'three';
 import { useConvexPolyhedron } from 'use-cannon';
 import { D20Materials } from '../../utils/Material';
 import { randomRotation } from '../../utils/RandomRotation';
-import getDiceValue from '../../utils/DiceValue';
+// import getDiceValue from '../../utils/DiceValue';
 
 export default function D10() {
   const sides = 10;
@@ -50,8 +50,8 @@ export default function D10() {
       args: geometry,
       rotation: randomRotation(),
       onCollide: () => {
-        const diceValue = getDiceValue('D6', geometry, ref.current);
-        console.log(diceValue);
+        // const diceValue = getDiceValue('D10', geometry, ref.current);
+        // console.log(diceValue);
       },
     };
   });
@@ -69,9 +69,14 @@ export default function D10() {
 
   const uvMapping = (uv, i) => {
     const isEven = i % 2 === 0;
-    uv[0].set(...(isEven ? [0.5, 0] : [0, 0.25]));
-    uv[1].set(...(isEven ? [1, 0.25] : [0.5, 0]));
-    uv[2].set(...(isEven ? [0.5, 1] : [0.5, 1]));
+    const a = [0.5, 0];
+    const b = [0, 0.25];
+    const c = [0.5, 1.25];
+    const d = [1.25, 0.25];
+
+    uv[0].set(...(isEven ? a : b));
+    uv[1].set(...(isEven ? d : a));
+    uv[2].set(...c);
   };
 
   // uv mapping

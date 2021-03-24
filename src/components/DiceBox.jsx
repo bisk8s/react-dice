@@ -12,7 +12,9 @@ import parseNotation from '../utils/DiceNotation';
 export default function DiceBox() {
   const sceneCamera = useResource();
 
-  const [notation, setNotation] = useState('1d10');
+  const [notation, setNotation] = useState(
+    '1d4 + 1d6 + 1d8 + 1d10 + 1d12 + 1d20'
+  );
   const [dices, setDices] = useState([]);
 
   const roll = () => {

@@ -1,9 +1,9 @@
 import React from 'react';
 import * as THREE from 'three';
 import { useBox } from 'use-cannon';
-import getDiceValue from '../../utils/DiceValue';
 import { D20Materials } from '../../utils/Material';
 import { randomRotation } from '../../utils/RandomRotation';
+// import getDiceValue from '../../utils/DiceValue';
 
 export default function D6() {
   const size = 2;
@@ -14,8 +14,8 @@ export default function D6() {
     args: [size, size, size],
     rotation: randomRotation(),
     onCollide: () => {
-      const diceValue = getDiceValue('D6', geometry, ref.current, 1);
-      console.log(diceValue);
+      // const diceValue = getDiceValue('D6', geometry, ref.current, 1);
+      // console.log(diceValue);
     },
   }));
 
