@@ -10,7 +10,7 @@ const SideShort = ({ ...props }) => {
   const [ref] = usePlane(() => ({ ...props }));
   return (
     <Plane ref={ref} args={[H * 2, H * 2]}>
-      <meshBasicMaterial attach="material" color={'#000'} opacity={0.3} />
+      <meshBasicMaterial attach="material" color={'#000'} opacity={0} />
     </Plane>
   );
 };
@@ -19,7 +19,7 @@ const SideWide = ({ ...props }) => {
   const [ref] = usePlane(() => ({ ...props }));
   return (
     <Plane ref={ref} args={[W * 2, H * 2]}>
-      <meshBasicMaterial attach="material" color={'#000'} opacity={0.3} />
+      <meshBasicMaterial attach="material" color={'#000'} opacity={0} />
     </Plane>
   );
 };

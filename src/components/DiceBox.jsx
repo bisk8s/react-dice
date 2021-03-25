@@ -8,6 +8,7 @@ import { D4, D6, D8, D10, D12, D20, V10, H10 } from './dices';
 
 import Box from './Box';
 import parseNotation from '../utils/DiceNotation';
+import Controls from './Controls';
 
 export default function DiceBox() {
   const sceneCamera = useResource();
@@ -30,15 +31,6 @@ export default function DiceBox() {
 
   return (
     <>
-      <div>
-        <input
-          type={'text'}
-          defaultValue={notation}
-          onChange={onTextChange}
-          onKeyDown={onEnterPress}
-        />
-        <button onClick={roll}>Roll!</button>
-      </div>
       <Canvas>
         <PerspectiveCamera
           ref={sceneCamera}
@@ -83,6 +75,15 @@ export default function DiceBox() {
           })}
         </Physics>
       </Canvas>
+      <Controls>
+        <input
+          type={'text'}
+          defaultValue={notation}
+          onChange={onTextChange}
+          onKeyDown={onEnterPress}
+        />
+        <button onClick={roll}>Roll!</button>
+      </Controls>
     </>
   );
 }
