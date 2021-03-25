@@ -54,9 +54,34 @@ function createVampireTexture(type, backColor, iconSize, margin) {
   context.fillRect(0, 0, canvas.width, canvas.height);
 
   const image = new Image(ts, ts);
-  image.src = `/assets/v5_${type}.png`;
+  image.src = `/assets/v_${type}.png`;
   image.onload = () => {
-    context.drawImage(image, 0, 0, ts, ts);
+    context.drawImage(image, 0, 0, ts * 0.9, ts * 0.9);
+  };
+
+  const texture = new THREE.CanvasTexture(
+    canvas,
+    THREE.UVMapping,
+    THREE.RepeatWrapping,
+    THREE.RepeatWrapping
+  );
+
+  return texture;
+}
+
+function createHungerTexture(type, backColor, iconSize, margin) {
+  let canvas = document.createElement('canvas');
+  let context = canvas.getContext('2d');
+  let ts = calcTextureSize(iconSize + iconSize * 2 * margin);
+
+  canvas.width = canvas.height = ts;
+  context.fillStyle = backColor;
+  context.fillRect(0, 0, canvas.width, canvas.height);
+
+  const image = new Image(ts, ts);
+  image.src = `/assets/h_${type}.png`;
+  image.onload = () => {
+    context.drawImage(image, 0, 0, ts * 0.9, ts * 0.9);
   };
 
   const texture = new THREE.CanvasTexture(
@@ -95,17 +120,32 @@ export function createTextDiceMaterials(
 }
 
 export function createVampireDiceMaterials(diceColor, iconSize, margin) {
-  return [
-    [0, 1],
-    [9, 2],
-    [3, 8],
-    [7, 4],
-    [5, 6],
-  ]
-    .flat()
+  return [...new Array(10)]
+    .map((_, index) => index)
     .map((index) => {
-      const type = index > 5 ? 'success' : index === 0 ? 'crit' : 'fail';
+      const type = index % 2 ? 'success' : index === 0 ? 'crit' : 'fail';
       const texture = createVampireTexture(type, diceColor, iconSize, margin);
+      const material = new THREE.MeshPhongMaterial({
+        ...materialOptions,
+        map: texture,
+      });
+      return material;
+    });
+}
+
+export function createHungerDiceMaterials(diceColor, iconSize, margin) {
+  return [...new Array(10)]
+    .map((_, index) => index)
+    .map((index) => {
+      const type =
+        index > 5
+          ? 'success'
+          : index === 0
+          ? 'crit'
+          : index === 1
+          ? 'beast'
+          : 'fail';
+      const texture = createHungerTexture(type, diceColor, iconSize, margin);
       const material = new THREE.MeshPhongMaterial({
         ...materialOptions,
         map: texture,
@@ -161,4 +201,4 @@ export const D20Materials = createTextDiceMaterials(
 
 export const V10Materials = createVampireDiceMaterials('#202020', 50, 1.2);
 
-export const H10Materials = createVampireDiceMaterials('#aa0000', 50, 1.2);
+export const H10Materials = createHungerDiceMaterials('#aa0000', 50, 1.2);
