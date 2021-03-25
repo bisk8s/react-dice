@@ -13,8 +13,7 @@ export default function DiceBox() {
   const sceneCamera = useResource();
 
   const [notation, setNotation] = useState(
-    // '1d4 + 1d6 + 1d8 + 1d10 + 1d12 + 1d20'
-    '1v10 + 1h10'
+    ['1d4', '1d6', '1d8', '1d10', '1d12', '1d20', '1v10', '1h10'].join(' ')
   );
   const [dices, setDices] = useState([]);
 

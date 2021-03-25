@@ -57,15 +57,27 @@ export default function D10({ position }) {
     };
   });
 
-  geometry.faces.forEach((face, i, arr) => {
-    let materialIndex = Math.ceil(10 * ((i + 1) / arr.length)) - 1;
-    if (i < 11 && i % 2 !== 0) {
-      materialIndex += 1;
+  geometry.faces.forEach((face, i) => {
+    switch (true) {
+      case [9, 0].lastIndexOf(i) >= 0:
+        // crit
+        face.materialIndex = 2;
+        break;
+      case [
+        [3, 4],
+        [7, 8],
+        [12, 13],
+        [18, 19],
+      ]
+        .flat()
+        .lastIndexOf(i) >= 0:
+        // success
+        face.materialIndex = 1;
+        break;
+      default:
+        face.materialIndex = 0;
+        break;
     }
-    if (i === 9) {
-      materialIndex = 0;
-    }
-    face.materialIndex = materialIndex;
   });
 
   const uvMapping = (uv, i) => {

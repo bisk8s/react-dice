@@ -120,38 +120,25 @@ export function createTextDiceMaterials(
 }
 
 export function createVampireDiceMaterials(diceColor, iconSize, margin) {
-  return [...new Array(10)]
-    .map((_, index) => index)
-    .map((index) => {
-      const type = index % 2 ? 'success' : index === 0 ? 'crit' : 'fail';
-      const texture = createVampireTexture(type, diceColor, iconSize, margin);
-      const material = new THREE.MeshPhongMaterial({
-        ...materialOptions,
-        map: texture,
-      });
-      return material;
+  return ['fail', 'success', 'crit'].map((type) => {
+    const texture = createVampireTexture(type, diceColor, iconSize, margin);
+    const material = new THREE.MeshPhongMaterial({
+      ...materialOptions,
+      map: texture,
     });
+    return material;
+  });
 }
 
 export function createHungerDiceMaterials(diceColor, iconSize, margin) {
-  return [...new Array(10)]
-    .map((_, index) => index)
-    .map((index) => {
-      const type =
-        index > 5
-          ? 'success'
-          : index === 0
-          ? 'crit'
-          : index === 1
-          ? 'beast'
-          : 'fail';
-      const texture = createHungerTexture(type, diceColor, iconSize, margin);
-      const material = new THREE.MeshPhongMaterial({
-        ...materialOptions,
-        map: texture,
-      });
-      return material;
+  return ['fail', 'success', 'crit', 'beast'].map((type) => {
+    const texture = createHungerTexture(type, diceColor, iconSize, margin);
+    const material = new THREE.MeshPhongMaterial({
+      ...materialOptions,
+      map: texture,
     });
+    return material;
+  });
 }
 
 export const standartD20Labels = [
@@ -194,11 +181,11 @@ export const standartD100Labels = [
 export const D20Materials = createTextDiceMaterials(
   standartD20Labels,
   '#aaaaaa',
-  '#202020',
+  '#000020',
   50,
   1.2
 );
 
-export const V10Materials = createVampireDiceMaterials('#202020', 50, 1.2);
+export const V10Materials = createVampireDiceMaterials('#101010', 50, 1.2);
 
 export const H10Materials = createHungerDiceMaterials('#aa0000', 50, 1.2);
