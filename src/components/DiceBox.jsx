@@ -4,7 +4,7 @@ import { Physics } from 'use-cannon';
 
 import { MapControls, PerspectiveCamera } from '@react-three/drei';
 
-import { D4, D6, D8, D10, D12, D20 } from './dices';
+import { D4, D6, D8, D10, D12, D20, V10, H10 } from './dices';
 
 import Box from './Box';
 import parseNotation from '../utils/DiceNotation';
@@ -13,20 +13,18 @@ export default function DiceBox() {
   const sceneCamera = useResource();
 
   const [notation, setNotation] = useState(
-    '1d4 + 1d6 + 1d8 + 1d10 + 1d12 + 1d20'
+    // '1d4 + 1d6 + 1d8 + 1d10 + 1d12 + 1d20'
+    '1v10 + 1h10'
   );
   const [dices, setDices] = useState([]);
 
   const roll = () => {
-    let notationObj = parseNotation(notation);
-    setDices(notationObj.set);
+    let result = parseNotation(notation);
+    setDices(result);
   };
 
   const onTextChange = ({ target: { value } }) => {
-    const upper = value.toUpperCase();
-    const matches = upper.match(/([0-9]+[D][0-9]+)/gi) || [];
-    const notation = matches.join(' + ');
-    setNotation(notation);
+    setNotation(value);
   };
 
   const onEnterPress = (e) => e.code === 'Enter' && roll();
@@ -76,6 +74,10 @@ export default function DiceBox() {
                 return <D12 key={_key} position={position} />;
               case 'D20':
                 return <D20 key={_key} position={position} />;
+              case 'V10':
+                return <V10 key={_key} position={position} />;
+              case 'H10':
+                return <H10 key={_key} position={position} />;
               default:
                 return null;
             }

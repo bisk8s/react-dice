@@ -7,14 +7,14 @@ const materialOptions = {
 };
 
 function calcTextureSize(approx) {
-  return Math.pow(2, Math.floor(Math.log(approx) / Math.log(2)));
+  return 2 * Math.pow(2, Math.floor(Math.log(approx) / Math.log(2)));
 }
 
 function createTextTexture(text, color, backColor, fontSize, margin) {
   if (text === undefined) return null;
   let canvas = document.createElement('canvas');
   let context = canvas.getContext('2d');
-  let ts = calcTextureSize(fontSize + fontSize * 2 * margin) * 2;
+  let ts = calcTextureSize(fontSize + fontSize * 2 * margin);
 
   canvas.width = canvas.height = ts;
   context.font = ts / (1 + 2 * margin) + 'pt Roboto';
@@ -44,7 +44,32 @@ function createTextTexture(text, color, backColor, fontSize, margin) {
   return texture;
 }
 
-export function createDiceMaterials(
+function createVampireTexture(type, backColor, iconSize, margin) {
+  let canvas = document.createElement('canvas');
+  let context = canvas.getContext('2d');
+  let ts = calcTextureSize(iconSize + iconSize * 2 * margin);
+
+  canvas.width = canvas.height = ts;
+  context.fillStyle = backColor;
+  context.fillRect(0, 0, canvas.width, canvas.height);
+
+  const image = new Image(ts, ts);
+  image.src = `/assets/v5_${type}.png`;
+  image.onload = () => {
+    context.drawImage(image, 0, 0, ts, ts);
+  };
+
+  const texture = new THREE.CanvasTexture(
+    canvas,
+    THREE.UVMapping,
+    THREE.RepeatWrapping,
+    THREE.RepeatWrapping
+  );
+
+  return texture;
+}
+
+export function createTextDiceMaterials(
   faceLabels,
   labelColor,
   diceColor,
@@ -67,6 +92,26 @@ export function createDiceMaterials(
 
     return material;
   });
+}
+
+export function createVampireDiceMaterials(diceColor, iconSize, margin) {
+  return [
+    [0, 1],
+    [9, 2],
+    [3, 8],
+    [7, 4],
+    [5, 6],
+  ]
+    .flat()
+    .map((index) => {
+      const type = index > 5 ? 'success' : index === 0 ? 'crit' : 'fail';
+      const texture = createVampireTexture(type, diceColor, iconSize, margin);
+      const material = new THREE.MeshPhongMaterial({
+        ...materialOptions,
+        map: texture,
+      });
+      return material;
+    });
 }
 
 export const standartD20Labels = [
@@ -106,15 +151,7 @@ export const standartD100Labels = [
   '90',
 ];
 
-export const D20Materials = createDiceMaterials(
-  standartD20Labels,
-  '#aaaaaa',
-  '#002000',
-  50,
-  1.2
-);
-
-export const OnixMaterials = createDiceMaterials(
+export const D20Materials = createTextDiceMaterials(
   standartD20Labels,
   '#aaaaaa',
   '#202020',
@@ -122,10 +159,6 @@ export const OnixMaterials = createDiceMaterials(
   1.2
 );
 
-export const HungerMaterials = createDiceMaterials(
-  standartD20Labels,
-  '#aaaaaa',
-  '#aa0000',
-  50,
-  1.2
-);
+export const V10Materials = createVampireDiceMaterials('#202020', 50, 1.2);
+
+export const H10Materials = createVampireDiceMaterials('#aa0000', 50, 1.2);
