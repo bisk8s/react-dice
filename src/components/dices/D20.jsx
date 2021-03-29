@@ -3,9 +3,10 @@ import * as THREE from 'three';
 import { useConvexPolyhedron } from 'use-cannon';
 import { D20Materials } from '../../utils/Material';
 import { randomRotation } from '../../utils/RandomRotation';
-// import getDiceValue from '../../utils/DiceValue';
+import getDiceValue from '../../utils/DiceValue';
+import GLOBALS from '../../utils/Globals';
 
-export default function D20({ position }) {
+export default function D20({ position, name }) {
   const radius = 1.6;
   const geometry = new THREE.IcosahedronGeometry(radius);
   const [ref] = useConvexPolyhedron(() => {
@@ -14,8 +15,10 @@ export default function D20({ position }) {
       args: geometry,
       rotation: randomRotation(),
       onCollide: () => {
-        // const diceValue = getDiceValue('D20', geometry, ref.current, 1);
-        // console.log(diceValue);
+        const diceValue = getDiceValue('D20', geometry, ref.current, 1);
+        let dices = {};
+        dices[name || 'D20'] = { D20: diceValue.toString() };
+        GLOBALS.dices = { ...GLOBALS.dices, ...dices };
       },
       position,
     };

@@ -1,13 +1,17 @@
 import React from 'react';
 import * as THREE from 'three';
 import { useConvexPolyhedron } from 'use-cannon';
+
 import { D4Materials } from '../../utils/Material';
 import { randomRotation } from '../../utils/RandomRotation';
 import getDiceValue from '../../utils/DiceValue';
 
-export default function D4({ position }) {
+import GLOBALS from '../../utils/Globals';
+
+export default function D4({ position, name }) {
   const radius = 1.5;
   const geometry = new THREE.TetrahedronGeometry(radius);
+
   const [ref] = useConvexPolyhedron(() => {
     return {
       mass: radius,
@@ -15,7 +19,9 @@ export default function D4({ position }) {
       rotation: randomRotation(),
       onCollide: () => {
         const diceValue = getDiceValue('D4', geometry, ref.current, 1);
-        console.log(diceValue);
+        let dices = {};
+        dices[name || 'D4'] = { D4: diceValue.toString() };
+        GLOBALS.dices = { ...GLOBALS.dices, ...dices };
       },
       position,
     };

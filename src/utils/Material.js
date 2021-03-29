@@ -110,15 +110,12 @@ function createD4TextTexture(texts, labelColor, diceColor, size, margin) {
   context.fillStyle = labelColor;
 
   context.translate(ts * 0.5, margin + ts * 0.5);
-  // context.rotate(180 * degrees);
 
-  console.log(texts);
   texts.forEach((text) => {
     context.fillText(text, 0, -fontSize);
     const angle = 120 * degrees;
     context.rotate(angle);
   });
-  console.log(canvas.toDataURL());
 
   var texture = new THREE.Texture(canvas);
   texture.needsUpdate = true;

@@ -3,9 +3,10 @@ import * as THREE from 'three';
 import { useConvexPolyhedron } from 'use-cannon';
 import { D20Materials } from '../../utils/Material';
 import { randomRotation } from '../../utils/RandomRotation';
-// import getDiceValue from '../../utils/DiceValue';
+import getDiceValue from '../../utils/DiceValue';
+import GLOBALS from '../../utils/Globals';
 
-export default function D10({ position }) {
+export default function D10({ position, name }) {
   const sides = 10;
   const radius = 1.5;
   const vertices = [
@@ -50,8 +51,10 @@ export default function D10({ position }) {
       args: geometry,
       rotation: randomRotation(),
       onCollide: () => {
-        // const diceValue = getDiceValue('D10', geometry, ref.current);
-        // console.log(diceValue);
+        const diceValue = getDiceValue('D10', geometry, ref.current);
+        let dices = {};
+        dices[name || 'D10'] = { D10: diceValue.toString() };
+        GLOBALS.dices = { ...GLOBALS.dices, ...dices };
       },
       position,
     };

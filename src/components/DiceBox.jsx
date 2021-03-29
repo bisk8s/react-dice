@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { Canvas, useResource } from 'react-three-fiber';
 import { Physics } from 'use-cannon';
 
@@ -9,22 +9,32 @@ import { D4, D6, D8, D10, D12, D20, V10, H10 } from './dices';
 import Box from './Box';
 import parseNotation from '../utils/DiceNotation';
 import Controls from './Controls';
+import GLOBALS from '../utils/Globals';
 
 export default function DiceBox() {
   const sceneCamera = useResource();
 
-  const [notation, setNotation] = useState(
-    ['1d4', '1d6', '1d8', '1d10', '1d12', '1d20', '1v10', '1h10'].join(' ')
-  );
+  const initialNotation = [
+    '1d4',
+    '1d6',
+    '1d8',
+    '1d10',
+    '1d12',
+    '1d20',
+    '1v10',
+    '1h10',
+  ].join(' ');
   const [dices, setDices] = useState([]);
+  const input = useRef();
 
   const roll = () => {
-    let result = parseNotation(notation);
+    GLOBALS.dices = {};
+    let result = parseNotation(input.current.value);
     setDices(result);
   };
 
-  const onTextChange = ({ target: { value } }) => {
-    setNotation(value);
+  const check = () => {
+    console.log(GLOBALS);
   };
 
   const onEnterPress = (e) => e.code === 'Enter' && roll();
@@ -54,21 +64,21 @@ export default function DiceBox() {
             const position = [0, 40, 0];
             switch (type) {
               case 'D4':
-                return <D4 key={_key} position={position} />;
+                return <D4 key={_key} position={position} name={_key} />;
               case 'D6':
-                return <D6 key={_key} position={position} />;
+                return <D6 key={_key} position={position} name={_key} />;
               case 'D8':
-                return <D8 key={_key} position={position} />;
+                return <D8 key={_key} position={position} name={_key} />;
               case 'D10':
-                return <D10 key={_key} position={position} />;
+                return <D10 key={_key} position={position} name={_key} />;
               case 'D12':
-                return <D12 key={_key} position={position} />;
+                return <D12 key={_key} position={position} name={_key} />;
               case 'D20':
-                return <D20 key={_key} position={position} />;
+                return <D20 key={_key} position={position} name={_key} />;
               case 'V10':
-                return <V10 key={_key} position={position} />;
+                return <V10 key={_key} position={position} name={_key} />;
               case 'H10':
-                return <H10 key={_key} position={position} />;
+                return <H10 key={_key} position={position} name={_key} />;
               default:
                 return null;
             }
@@ -77,12 +87,13 @@ export default function DiceBox() {
       </Canvas>
       <Controls>
         <input
+          ref={input}
           type={'text'}
-          defaultValue={notation}
-          onChange={onTextChange}
+          defaultValue={initialNotation}
           onKeyDown={onEnterPress}
         />
         <button onClick={roll}>Roll!</button>
+        <button onClick={check}>Check</button>
       </Controls>
     </>
   );
