@@ -8,7 +8,7 @@ import { D4, D6, D8, D10, D12, D20, V10, H10 } from './dices';
 
 import _ from 'lodash';
 
-import Box from './Box';
+import Box, { STAGE_H, STAGE_W } from './Box';
 import parseNotation from '../utils/DiceNotation';
 import Controls from './Controls';
 import GLOBALS from '../utils/Globals';
@@ -32,17 +32,31 @@ export default function DiceBox() {
 
   const roll = () => {
     GLOBALS.dices = {};
+    GLOBALS.type = {};
+    GLOBALS.sum = {};
     let result = parseNotation(input.current.value);
     setDices(result);
   };
 
   const check = () => {
     pre.current.innerText = 'RESULTS: \n';
-    _.forEach(GLOBALS.dices, (item) => {
+    _.forEach(GLOBALS.dices, (item, key) => {
       _.forEach(item, (value, name) => {
         pre.current.innerText += `${name}: ${value}`;
+        if (_.isNaN(value * 2)) {
+          GLOBALS.type[key] = { value };
+        } else {
+          GLOBALS.sum[key] = parseInt(value);
+        }
       });
       pre.current.innerText += '\n';
+    });
+    pre.current.innerText += '\n';
+    pre.current.innerText += 'Total: \n';
+    pre.current.innerText += _.sum(_.map(GLOBALS.sum, (value) => value));
+    pre.current.innerText += '\n';
+    _.map(_.groupBy(GLOBALS.type, 'value'), (item, key) => {
+      pre.current.innerText += `${key}: ${item.length} \n`;
     });
   };
 
@@ -70,7 +84,11 @@ export default function DiceBox() {
 
           {dices.map((type, index) => {
             const key = type + index + Date.now();
-            const position = [0, 40, 0];
+            const position = [
+              STAGE_W * Math.random(),
+              40,
+              STAGE_H * Math.random(),
+            ];
             const props = {
               key,
               position,
@@ -108,7 +126,6 @@ export default function DiceBox() {
           onKeyDown={onEnterPress}
         />
         <button onClick={roll}>Roll!</button>
-        <button onClick={check}>Check</button>
         <pre ref={pre}></pre>
       </Controls>
     </>
