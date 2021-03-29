@@ -6,7 +6,7 @@ import { randomRotation } from '../../utils/RandomRotation';
 import getDiceValue from '../../utils/DiceValue';
 import GLOBALS from '../../utils/Globals';
 
-export default function D12({ position, name }) {
+export default function D12({ position, name, check }) {
   const radius = 1.5;
   const geometry = new THREE.DodecahedronGeometry(radius);
   const [ref] = useConvexPolyhedron(() => {
@@ -19,6 +19,8 @@ export default function D12({ position, name }) {
         let dices = {};
         dices[name || 'D12'] = { D12: diceValue.toString() };
         GLOBALS.dices = { ...GLOBALS.dices, ...dices };
+
+        check();
       },
       position,
     };

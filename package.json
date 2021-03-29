@@ -5,6 +5,7 @@
   "description": "React 3D Dice Roller",
   "dependencies": {
     "@react-three/drei": "^3.11.1",
+    "lodash": "^4.17.21",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-scripts": "4.0.3",

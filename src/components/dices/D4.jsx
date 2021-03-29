@@ -8,7 +8,7 @@ import getDiceValue from '../../utils/DiceValue';
 
 import GLOBALS from '../../utils/Globals';
 
-export default function D4({ position, name }) {
+export default function D4({ position, name, check }) {
   const radius = 1.5;
   const geometry = new THREE.TetrahedronGeometry(radius);
 
@@ -22,6 +22,8 @@ export default function D4({ position, name }) {
         let dices = {};
         dices[name || 'D4'] = { D4: diceValue.toString() };
         GLOBALS.dices = { ...GLOBALS.dices, ...dices };
+
+        check();
       },
       position,
     };

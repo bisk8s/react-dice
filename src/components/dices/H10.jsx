@@ -6,7 +6,7 @@ import { randomRotation } from '../../utils/RandomRotation';
 import getDiceValue from '../../utils/DiceValue';
 import GLOBALS from '../../utils/Globals';
 
-export default function H10({ position, name }) {
+export default function H10({ position, name, check }) {
   const sides = 10;
   const radius = 1.5;
   const vertices = [
@@ -59,6 +59,8 @@ export default function H10({ position, name }) {
           ],
         };
         GLOBALS.dices = { ...GLOBALS.dices, ...dices };
+
+        check();
       },
       position,
     };

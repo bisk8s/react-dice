@@ -6,7 +6,7 @@ import { randomRotation } from '../../utils/RandomRotation';
 import getDiceValue from '../../utils/DiceValue';
 import GLOBALS from '../../utils/Globals';
 
-export default function D10({ position, name }) {
+export default function D10({ position, name, check }) {
   const sides = 10;
   const radius = 1.5;
   const vertices = [
@@ -57,6 +57,8 @@ export default function D10({ position, name }) {
           V10: ['Fail', 'Success', 'Critical'][diceValue],
         };
         GLOBALS.dices = { ...GLOBALS.dices, ...dices };
+
+        check();
       },
       position,
     };

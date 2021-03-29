@@ -6,7 +6,7 @@ import { randomRotation } from '../../utils/RandomRotation';
 import getDiceValue from '../../utils/DiceValue';
 import GLOBALS from '../../utils/Globals';
 
-export default function D6({ position, name }) {
+export default function D6({ position, name, check }) {
   const size = 2;
   const geometry = new THREE.BoxGeometry(size, size, size);
 
@@ -19,6 +19,8 @@ export default function D6({ position, name }) {
       let dices = {};
       dices[name || 'D6'] = { D6: diceValue.toString() };
       GLOBALS.dices = { ...GLOBALS.dices, ...dices };
+
+      check();
     },
     position,
   }));

@@ -6,7 +6,7 @@ import { D20Materials } from '../../utils/Material';
 import getDiceValue from '../../utils/DiceValue';
 import GLOBALS from '../../utils/Globals';
 
-export default function D8({ position, name }) {
+export default function D8({ position, name, check }) {
   const radius = 1.5;
   const geometry = new THREE.OctahedronGeometry(radius);
   const [ref] = useConvexPolyhedron(() => {
@@ -19,6 +19,8 @@ export default function D8({ position, name }) {
         let dices = {};
         dices[name || 'D8'] = { D8: diceValue.toString() };
         GLOBALS.dices = { ...GLOBALS.dices, ...dices };
+
+        check();
       },
       position,
     };

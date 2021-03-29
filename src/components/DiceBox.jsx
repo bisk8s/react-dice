@@ -6,6 +6,8 @@ import { MapControls, PerspectiveCamera } from '@react-three/drei';
 
 import { D4, D6, D8, D10, D12, D20, V10, H10 } from './dices';
 
+import _ from 'lodash';
+
 import Box from './Box';
 import parseNotation from '../utils/DiceNotation';
 import Controls from './Controls';
@@ -26,6 +28,7 @@ export default function DiceBox() {
   ].join(' ');
   const [dices, setDices] = useState([]);
   const input = useRef();
+  const pre = useRef();
 
   const roll = () => {
     GLOBALS.dices = {};
@@ -34,7 +37,13 @@ export default function DiceBox() {
   };
 
   const check = () => {
-    console.log(GLOBALS);
+    pre.current.innerText = 'RESULTS: \n';
+    _.forEach(GLOBALS.dices, (item) => {
+      _.forEach(item, (value, name) => {
+        pre.current.innerText += `${name}: ${value}`;
+      });
+      pre.current.innerText += '\n';
+    });
   };
 
   const onEnterPress = (e) => e.code === 'Enter' && roll();
@@ -59,26 +68,32 @@ export default function DiceBox() {
         <Physics>
           <Box position={[0, 0, 0]} />
 
-          {dices.map((type, key) => {
-            const _key = type + key + Date.now();
+          {dices.map((type, index) => {
+            const key = type + index + Date.now();
             const position = [0, 40, 0];
+            const props = {
+              key,
+              position,
+              name: key,
+              check: () => check(),
+            };
             switch (type) {
               case 'D4':
-                return <D4 key={_key} position={position} name={_key} />;
+                return <D4 {...props} />;
               case 'D6':
-                return <D6 key={_key} position={position} name={_key} />;
+                return <D6 {...props} />;
               case 'D8':
-                return <D8 key={_key} position={position} name={_key} />;
+                return <D8 {...props} />;
               case 'D10':
-                return <D10 key={_key} position={position} name={_key} />;
+                return <D10 {...props} />;
               case 'D12':
-                return <D12 key={_key} position={position} name={_key} />;
+                return <D12 {...props} />;
               case 'D20':
-                return <D20 key={_key} position={position} name={_key} />;
+                return <D20 {...props} />;
               case 'V10':
-                return <V10 key={_key} position={position} name={_key} />;
+                return <V10 {...props} />;
               case 'H10':
-                return <H10 key={_key} position={position} name={_key} />;
+                return <H10 {...props} />;
               default:
                 return null;
             }
@@ -94,6 +109,7 @@ export default function DiceBox() {
         />
         <button onClick={roll}>Roll!</button>
         <button onClick={check}>Check</button>
+        <pre ref={pre}></pre>
       </Controls>
     </>
   );
