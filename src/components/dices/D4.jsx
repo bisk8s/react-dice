@@ -1,9 +1,9 @@
 import React from 'react';
 import * as THREE from 'three';
 import { useConvexPolyhedron } from 'use-cannon';
-import { D20Materials } from '../../utils/Material';
+import { D4Materials } from '../../utils/Material';
 import { randomRotation } from '../../utils/RandomRotation';
-// import getDiceValue from '../../utils/DiceValue';
+import getDiceValue from '../../utils/DiceValue';
 
 export default function D4({ position }) {
   const radius = 1.5;
@@ -12,10 +12,10 @@ export default function D4({ position }) {
     return {
       mass: radius,
       args: geometry,
-      mrotation: randomRotation(),
+      rotation: randomRotation(),
       onCollide: () => {
-        // const diceValue = getDiceValue('D4', geometry, ref.current, 1);
-        // console.log(diceValue);
+        const diceValue = getDiceValue('D4', geometry, ref.current, 1);
+        console.log(diceValue);
       },
       position,
     };
@@ -28,15 +28,13 @@ export default function D4({ position }) {
 
   const uvMapping = (uv, i) => {
     uv[0].set(1.3, 0);
-    uv[1].set(0.33, 1.3);
-    uv[2].set(0, 0);
+    uv[1].set(0.5, 1);
+    uv[2].set(-0.3, 0);
   };
 
   // uv mapping
   geometry.faceVertexUvs[0].forEach(uvMapping);
   geometry.uvsNeedUpdate = true;
 
-  return (
-    <mesh ref={ref} geometry={geometry} material={D20Materials.slice(1)} />
-  );
+  return <mesh ref={ref} geometry={geometry} material={D4Materials} />;
 }

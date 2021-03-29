@@ -1,38 +1,39 @@
 import * as THREE from 'three';
 
+const degrees = Math.PI / 180;
+
 const materialOptions = {
   specular: 0x172022,
   color: 0xf0f0f0,
   shininess: 0,
 };
 
-function calcTextureSize(approx) {
-  return 2 * Math.pow(2, Math.floor(Math.log(approx) / Math.log(2)));
+function calcTextureSize(size, margin) {
+  return Math.floor(size + margin * 2);
 }
 
-function createTextTexture(text, color, backColor, fontSize, margin) {
+function createTextTexture(text, color, backColor, size, margin) {
   if (text === undefined) return null;
   let canvas = document.createElement('canvas');
   let context = canvas.getContext('2d');
-  let ts = calcTextureSize(fontSize + fontSize * 2 * margin);
+  let ts = calcTextureSize(size, margin);
 
   canvas.width = canvas.height = ts;
-  context.font = ts / (1 + 2 * margin) + 'pt Roboto';
+  const fontSize = ts - margin * 4;
+  context.font = fontSize + 'px Arial';
   context.fillStyle = backColor;
-  context.fillRect(0, 0, canvas.width, canvas.height);
+  context.fillRect(0, 0, ts, ts);
 
   context.textAlign = 'center';
   context.textBaseline = 'middle';
 
-  ['#000000AA', color, '#FFFFFF33'].forEach((c, i) => {
-    const x = canvas.width / 2 + i * 2;
-    const y = canvas.height / 2 + i * 2;
-    context.fillStyle = c;
-    context.fillText(text, x, y);
-    if (text === '6' || text === '9') {
-      context.fillText('  .', x, y);
-    }
-  });
+  const x = ts * 0.5;
+  const y = ts * 0.5;
+  context.fillStyle = color;
+  context.fillText(text, x, y);
+  if (text === '6' || text === '9') {
+    context.fillText('  .', x, y);
+  }
 
   const texture = new THREE.CanvasTexture(
     canvas,
@@ -44,14 +45,14 @@ function createTextTexture(text, color, backColor, fontSize, margin) {
   return texture;
 }
 
-function createVampireTexture(type, backColor, iconSize, margin) {
+function createVampireTexture(type, backColor, size, margin) {
   let canvas = document.createElement('canvas');
   let context = canvas.getContext('2d');
-  let ts = calcTextureSize(iconSize + iconSize * 2 * margin);
+  let ts = calcTextureSize(size, margin);
 
   canvas.width = canvas.height = ts;
   context.fillStyle = backColor;
-  context.fillRect(0, 0, canvas.width, canvas.height);
+  context.fillRect(0, 0, ts, ts);
 
   const image = new Image(ts, ts);
   image.src = `/assets/v_${type}.png`;
@@ -69,14 +70,14 @@ function createVampireTexture(type, backColor, iconSize, margin) {
   return texture;
 }
 
-function createHungerTexture(type, backColor, iconSize, margin) {
+function createHungerTexture(type, backColor, size, margin) {
   let canvas = document.createElement('canvas');
   let context = canvas.getContext('2d');
-  let ts = calcTextureSize(iconSize + iconSize * 2 * margin);
+  let ts = calcTextureSize(size, margin);
 
   canvas.width = canvas.height = ts;
   context.fillStyle = backColor;
-  context.fillRect(0, 0, canvas.width, canvas.height);
+  context.fillRect(0, 0, ts, ts);
 
   const image = new Image(ts, ts);
   image.src = `/assets/h_${type}.png`;
@@ -91,6 +92,36 @@ function createHungerTexture(type, backColor, iconSize, margin) {
     THREE.RepeatWrapping
   );
 
+  return texture;
+}
+
+function createD4TextTexture(texts, labelColor, diceColor, size, margin) {
+  var canvas = document.createElement('canvas');
+  var context = canvas.getContext('2d');
+  let ts = calcTextureSize(size, margin);
+
+  canvas.width = canvas.height = ts;
+  const fontSize = ts * 0.33;
+  context.font = fontSize + 'pt Arial';
+  context.fillStyle = diceColor;
+  context.fillRect(0, 0, ts, ts);
+  context.textAlign = 'center';
+  context.textBaseline = 'middle';
+  context.fillStyle = labelColor;
+
+  context.translate(ts * 0.5, margin + ts * 0.5);
+  // context.rotate(180 * degrees);
+
+  console.log(texts);
+  texts.forEach((text) => {
+    context.fillText(text, 0, -fontSize);
+    const angle = 120 * degrees;
+    context.rotate(angle);
+  });
+  console.log(canvas.toDataURL());
+
+  var texture = new THREE.Texture(canvas);
+  texture.needsUpdate = true;
   return texture;
 }
 
@@ -119,6 +150,29 @@ export function createTextDiceMaterials(
   });
 }
 
+export function createD4Materials(
+  faceLabels,
+  labelColor,
+  diceColor,
+  fontSize,
+  margin
+) {
+  var materials = faceLabels.map((faceLabel) => {
+    return new THREE.MeshPhongMaterial({
+      ...materialOptions,
+      map: createD4TextTexture(
+        faceLabel,
+        labelColor,
+        diceColor,
+        fontSize,
+        margin
+      ),
+    });
+  });
+
+  return materials;
+}
+
 export function createVampireDiceMaterials(diceColor, iconSize, margin) {
   return ['fail', 'success', 'crit'].map((type) => {
     const texture = createVampireTexture(type, diceColor, iconSize, margin);
@@ -141,7 +195,7 @@ export function createHungerDiceMaterials(diceColor, iconSize, margin) {
   });
 }
 
-export const standartD20Labels = [
+const standartD20Labels = [
   '0',
   '1',
   '2',
@@ -165,17 +219,24 @@ export const standartD20Labels = [
   '20',
 ];
 
-export const standartD100Labels = [
-  '00',
-  '10',
-  '20',
-  '30',
-  '40',
-  '50',
-  '60',
-  '70',
-  '80',
-  '90',
+// const standartD100Labels = [
+//   '00',
+//   '10',
+//   '20',
+//   '30',
+//   '40',
+//   '50',
+//   '60',
+//   '70',
+//   '80',
+//   '90',
+// ];
+
+var standartD4labels = [
+  [4, 2, 3],
+  [3, 1, 4],
+  [4, 1, 2],
+  [2, 1, 3],
 ];
 
 export const D20Materials = createTextDiceMaterials(
@@ -183,7 +244,15 @@ export const D20Materials = createTextDiceMaterials(
   '#aaaaaa',
   '#000020',
   50,
-  1.2
+  5
+);
+
+export const D4Materials = createD4Materials(
+  standartD4labels,
+  '#aaaaaa',
+  '#000020',
+  50,
+  10
 );
 
 export const V10Materials = createVampireDiceMaterials('#101010', 50, 1.2);
